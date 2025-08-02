@@ -1,0 +1,45 @@
+### Criar um nova fazenda
+POST http://localhost:3000/fazendas
+Content-Type: application/json
+
+{
+    "nome": "Fazenda Boa Vista",
+    "cidade": "Campo Grande",
+    "estado": "MS",
+    "areaTotal": "1000",
+    "areaAgricultavel": "800",
+    "areaVegetacao": "200",
+    "produtorId": 1
+}
+
+###
+
+### Listar todas as fazendas
+GET http://localhost:3000/fazendas
+Content-Type: application/json
+###
+
+### Obter uma fazenda específica
+GET http://localhost:3000/fazendas/1
+Content-Type: application/json
+###
+
+### Atualizar uma fazenda
+PUT http://localhost:3000/fazendas/1
+Content-Type: application/json
+
+{
+    "nome": "Fazenda Boa Vista Atualizada",
+    "cidade": "Campo Grande",
+    "estado": "MS",
+    "areaTotal": "1200",
+    "areaAgricultavel": "900",
+    "areaVegetacao": "300",
+    "produtorId": 1
+}
+###
+
+### Deletar uma fazenda
+DELETE http://localhost:3000/fazendas/1
+Content-Type: application/json
+###

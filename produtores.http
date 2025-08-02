@@ -1,0 +1,34 @@
+### Criar um novo produtor
+POST http://localhost:3000/produtor
+Content-Type: application/json
+
+{
+    "nome": "João da Silva",
+    "cpfOuCnpj": "12345678901"
+}
+###
+
+### Listar todos os produtores
+GET http://localhost:3000/produtor
+Content-Type: application/json
+###
+
+### Obter um produtor específico
+GET http://localhost:3000/produtor/6
+Content-Type: application/json
+###
+
+### Atualizar um produtor
+PUT http://localhost:3000/produtor/6
+Content-Type: application/json
+
+{
+    "nome": "João da Silva Atualizado",
+    "cpfOuCnpj": "12345678901"
+}
+###
+
+### Deletar um produtor
+DELETE http://localhost:3000/produtor/6
+Content-Type: application/json
+###
