@@ -1,0 +1,24 @@
+### Criar nova safra
+POST http://localhost:3000/safras
+Content-Type: application/json
+
+{
+  "ano": 2025
+}
+
+### Listar todas as safras
+GET http://localhost:3000/safras
+
+### Buscar safra por ID
+GET http://localhost:3000/safras/1
+
+### Atualizar safra
+PATCH http://localhost:3000/safras/1
+Content-Type: application/json
+
+{
+  "ano": 2026
+}
+
+### Deletar safra
+DELETE http://localhost:3000/safras/1
