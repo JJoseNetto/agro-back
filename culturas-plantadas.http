@@ -1,0 +1,26 @@
+### Criar nova cultura plantada
+POST http://localhost:3000/culturas-plantadas
+Content-Type: application/json
+
+{
+  "nome": "Soja",
+  "fazendaId": 1,
+  "safraId": 1
+}
+
+### Listar todas as culturas plantadas
+GET http://localhost:3000/culturas-plantadas
+
+### Buscar cultura plantada por ID
+GET http://localhost:3000/culturas-plantadas/1
+
+### Atualizar cultura plantada
+PATCH http://localhost:3000/culturas-plantadas/1
+Content-Type: application/json
+
+{
+  "nome": "Milho"
+}
+
+### Deletar cultura plantada
+DELETE http://localhost:3000/culturas-plantadas/1
