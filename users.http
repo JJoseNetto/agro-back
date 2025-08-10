@@ -1,0 +1,68 @@
+### Criar novo usuário
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "senha123456",
+  "nome": "João Silva",
+  "isActive": true
+}
+
+### Listar todos os usuários
+GET http://localhost:3000/users
+
+### Buscar usuário por ID
+GET http://localhost:3000/users/1
+
+### Atualizar usuário
+PATCH http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+  "nome": "João Silva Santos",
+  "email": "joao.santos@example.com"
+}
+
+### Atualizar senha do usuário
+PATCH http://localhost:3000/users/1
+Content-Type: application/json
+
+{
+  "password": "novasenha123"
+}
+
+### Ativar/Desativar usuário
+PATCH http://localhost:3000/users/1/toggle-active
+
+### Deletar usuário
+DELETE http://localhost:3000/users/1
+
+### Teste de erro - Email duplicado
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "email": "joao@example.com",
+  "password": "senha123456",
+  "nome": "Outro João"
+}
+
+### Teste de erro - Usuário não encontrado
+GET http://localhost:3000/users/999
+
+
+### Login de usuário
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@sistema.com",
+  "password": "novasenha123"
+}
+
+###
+
+### Listar todos os usuários
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNpc3RlbWEuY29tIiwic3ViIjoxLCJub21lIjoiU2lzdGVtYSBBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NDc4ODI0MywiZXhwIjoxNzU0NzkxODQzfQ.D0gzf72DwK2uVviwQ6kQTuY2AjNIwtUShVosoMMAJCE
