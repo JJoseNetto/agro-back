@@ -15,6 +15,13 @@
       "when": 1753925023036,
       "tag": "0001_naive_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1754435975730,
+      "tag": "0002_glamorous_franklin_storm",
+      "breakpoints": true
     }
   ]
 }

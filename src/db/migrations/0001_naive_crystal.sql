@@ -5,7 +5,7 @@ CREATE TABLE "culturas_plantadas" (
 	"safra_id" serial NOT NULL,
 	"created_at" timestamp DEFAULT now()
 );
---> statement-breakpoint
+
 CREATE TABLE "fazendas" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"nome" varchar(255) NOT NULL,
@@ -17,13 +17,13 @@ CREATE TABLE "fazendas" (
 	"produtor_id" serial NOT NULL,
 	"created_at" timestamp DEFAULT now()
 );
---> statement-breakpoint
+
 CREATE TABLE "safras" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"ano" integer NOT NULL,
 	"created_at" timestamp DEFAULT now()
 );
---> statement-breakpoint
+
 ALTER TABLE "culturas_plantadas" ADD CONSTRAINT "culturas_plantadas_fazenda_id_fazendas_id_fk" FOREIGN KEY ("fazenda_id") REFERENCES "public"."fazendas"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "culturas_plantadas" ADD CONSTRAINT "culturas_plantadas_safra_id_safras_id_fk" FOREIGN KEY ("safra_id") REFERENCES "public"."safras"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "fazendas" ADD CONSTRAINT "fazendas_produtor_id_produtores_id_fk" FOREIGN KEY ("produtor_id") REFERENCES "public"."produtores"("id") ON DELETE cascade ON UPDATE no action;
