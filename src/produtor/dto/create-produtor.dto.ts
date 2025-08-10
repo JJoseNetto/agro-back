@@ -11,4 +11,8 @@ export class CreateProdutorDto {
     @IsNotEmpty({message: 'O CPF ou CNPJ é obrigatório'})
     @IsCpfOuCnpj({ message: 'CPF ou CNPJ inválido' })
     cpfOuCnpj: string;
+
+    @ApiProperty({ example: 1, description: 'ID do usuário associado ao produtor' })
+    @IsNotEmpty({ message: 'O ID do usuário é obrigatório' })
+    userId: number;
 }

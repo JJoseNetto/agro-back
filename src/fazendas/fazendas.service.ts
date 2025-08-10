@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFazendaDto } from './dto/create-fazenda.dto';
 import { UpdateFazendaDto } from './dto/update-fazenda.dto';
 import { db } from 'src/db/connection';
@@ -24,10 +24,17 @@ export class FazendasService {
   }
 
   async findOne(id: number) {
-    return db.select().from(fazendas).where(eq(fazendas.id, id)).limit(1);
+    const fazenda =  await db.select().from(fazendas).where(eq(fazendas.id, id));
+
+    if (fazenda.length === 0) {
+      throw new NotFoundException('Fazenda não encontrada');
+    }
+    return fazenda[0];
   }
 
   async update(id: number, updateFazendaDto: UpdateFazendaDto) {
+    await this.findOne(id);
+
     return db.update(fazendas).set({
       nome: updateFazendaDto.nome,
       cidade: updateFazendaDto.cidade,
@@ -40,6 +47,8 @@ export class FazendasService {
   }
 
   async remove(id: number) {
+    await this.findOne(id);
+
     return db.delete(fazendas).where(eq(fazendas.id, id)).returning();
   }
 }

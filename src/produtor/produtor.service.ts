@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProdutorDto } from './dto/create-produtor.dto';
 import { UpdateProdutorDto } from './dto/update-produtor.dto';
 import { db } from '../db/connection';
 import { eq } from 'drizzle-orm';
 import { produtores } from '../db/schema/produtor';
-import { BadRequestException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 
 @Injectable()
 export class ProdutorService {
@@ -12,12 +12,13 @@ export class ProdutorService {
 
     const produtorExistente = await db.select().from(produtores).where(eq(produtores.cpfOuCnpj, createProdutorDto.cpfOuCnpj)).limit(1);
     if (produtorExistente.length > 0) {
-      throw new BadRequestException('CPF ou CNPJ já cadastrado.');
+      throw new ConflictException('CPF ou CNPJ já está em uso');
     }
 
     return db.insert(produtores).values({
       nome: createProdutorDto.nome,
-      cpfOuCnpj: createProdutorDto.cpfOuCnpj, 
+      cpfOuCnpj: createProdutorDto.cpfOuCnpj,
+      userId: createProdutorDto.userId, 
       }).returning({
         id: produtores.id,
         nome: produtores.nome,
@@ -31,17 +32,28 @@ export class ProdutorService {
   }
 
   async findOne(id: number) {
-    return db.select().from(produtores).where(eq(produtores.id, id)).limit(1);
+
+    const produtor =  await db.select().from(produtores).where(eq(produtores.id, id));
+
+    if (produtor.length === 0) {
+      throw new NotFoundException('Produtor não encontrado');
+    }
+
+    return produtor[0];
   }
 
   async update(id: number, updateProdutorDto: UpdateProdutorDto) {
+    await this.findOne(id);
+
     return db.update(produtores).set({
       nome: updateProdutorDto.nome,
       cpfOuCnpj: updateProdutorDto.cpfOuCnpj,
     }).where(eq(produtores.id, id)).returning();
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.findOne(id);
+
     return db.delete(produtores).where(eq(produtores.id, id)).returning();
   }
 }
