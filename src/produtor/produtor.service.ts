@@ -15,6 +15,10 @@ export class ProdutorService {
       throw new ConflictException('CPF ou CNPJ já está em uso');
     }
 
+    if (!createProdutorDto.userId) {
+      throw new ConflictException('O ID do usuário é obrigatório');
+    }
+
     return db.insert(produtores).values({
       nome: createProdutorDto.nome,
       cpfOuCnpj: createProdutorDto.cpfOuCnpj,
@@ -56,4 +60,9 @@ export class ProdutorService {
 
     return db.delete(produtores).where(eq(produtores.id, id)).returning();
   }
+
+  async findByUserId(userId: number) {
+    return await db.select().from(produtores).where(eq(produtores.userId, userId));
+  }
+
 }

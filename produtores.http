@@ -1,16 +1,19 @@
 ### Criar um novo produtor
 POST http://localhost:3000/produtor
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNpc3RlbWEuY29tIiwic3ViIjoxLCJub21lIjoiU2lzdGVtYSBBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NDk2MTA4NSwiZXhwIjoxNzU0OTY0Njg1fQ.EZQsbfYofZ1pCXXUIme4befKj9aLVr8IMjvNWeku5jo
 
 {
-    "nome": "João da Silva",
-    "cpfOuCnpj": "12345678901"
+    "nome": "Goku",
+    "cpfOuCnpj": "70189474050",
+    "userId": 2
 }
 ###
 
 ### Listar todos os produtores
 GET http://localhost:3000/produtor
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQHNpc3RlbWEuY29tIiwic3ViIjoxLCJub21lIjoiU2lzdGVtYSBBZG1pbiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1NDk1NzcyMCwiZXhwIjoxNzU0OTYxMzIwfQ.vpV3S9KIdLvr_W_MAeH03Dz25TPnGsjjlY08FzPCS8s
 ###
 
 ### Obter um produtor específico

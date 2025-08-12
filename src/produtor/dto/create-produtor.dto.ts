@@ -1,4 +1,4 @@
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 import { IsCpfOuCnpj } from 'src/common/validators/is-cpf-ou-cnpj.validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -13,6 +13,6 @@ export class CreateProdutorDto {
     cpfOuCnpj: string;
 
     @ApiProperty({ example: 1, description: 'ID do usuário associado ao produtor' })
-    @IsNotEmpty({ message: 'O ID do usuário é obrigatório' })
-    userId: number;
+    @IsOptional()
+    userId?: number;
 }
