@@ -321,6 +321,6 @@ npm run format             # Formata código
 **[JJose Netto](https://github.com/JJoseNetto)**
 
 - GitHub: [@JJoseNetto](https://github.com/JJoseNetto)
-- LinkedIn: [Seu LinkedIn](https://linkedin.com/in/seu-perfil)
+- LinkedIn: [Meu LinkedIn](https://www.linkedin.com/in/jjosenetto/)
 
 ---
