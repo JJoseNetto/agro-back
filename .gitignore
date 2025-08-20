@@ -64,3 +64,26 @@ coverage/
 
 # Jest coverage
 coverage/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+dev.db
+database.db
+
+# Drizzle migrations (pasta db/migrations)
+/src/db/migrations
+
+# Uploads/Storage
+/uploads
+/public/uploads
+/storage
+
+# Cache
+.cache
+.eslintcache
+
+# pnpm
+.pnpm-debug.log*
+.pnpm-store
