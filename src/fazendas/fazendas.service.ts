@@ -1,54 +1,65 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFazendaDto } from './dto/create-fazenda.dto';
 import { UpdateFazendaDto } from './dto/update-fazenda.dto';
-import { db } from 'src/db/connection';
-import { eq } from 'drizzle-orm';
-import { fazendas } from '../db/schema/fazendas';
+
+import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
+import { FazendasRepository } from './fazendas.repository';
 
 @Injectable()
 export class FazendasService {
-  async create(createFazendaDto: CreateFazendaDto) {
-    return db.insert(fazendas).values({
-      nome: createFazendaDto.nome,
-      cidade: createFazendaDto.cidade,
-      estado: createFazendaDto.estado,
-      areaTotal: createFazendaDto.areaTotal,
-      areaAgricultavel: createFazendaDto.areaAgricultavel,
-      areaVegetacao: createFazendaDto.areaVegetacao,
-      produtorId: createFazendaDto.produtorId,
-    }).returning();
+  constructor(private readonly fazendasRepository: FazendasRepository) {}
+
+  async create(createFazendaDto: CreateFazendaDto, user: CurrentUserDto) {
+    await this.validateFazendaOwnership(createFazendaDto.produtorId, user.id);
+
+    const fazenda = await this.fazendasRepository.create(createFazendaDto);
+
+    return fazenda;
   }
 
-  async findAll() {
-    return db.select().from(fazendas).orderBy(fazendas.nome);
+    async findAll(user: CurrentUserDto) {
+    const result = await this.fazendasRepository.findAll(user);
+
+    return result;
   }
 
-  async findOne(id: number) {
-    const fazenda =  await db.select().from(fazendas).where(eq(fazendas.id, id));
+  async findOne(id: number, user: CurrentUserDto) {
+    const fazenda = await this.fazendasRepository.findOne(id, user.id);
 
-    if (fazenda.length === 0) {
+    if (!fazenda) {
       throw new NotFoundException('Fazenda não encontrada');
     }
-    return fazenda[0];
+
+    return fazenda;
   }
 
-  async update(id: number, updateFazendaDto: UpdateFazendaDto) {
-    await this.findOne(id);
+  async update(id: number, updateFazendaDto: UpdateFazendaDto, user: CurrentUserDto) {
+    
+    await this.findOne(id, user);
+    
+    if (updateFazendaDto.produtorId) {
+      await this.validateFazendaOwnership(updateFazendaDto.produtorId, user.id);
+    }
 
-    return db.update(fazendas).set({
-      nome: updateFazendaDto.nome,
-      cidade: updateFazendaDto.cidade,
-      estado: updateFazendaDto.estado,
-      areaTotal: updateFazendaDto.areaTotal,
-      areaAgricultavel: updateFazendaDto.areaAgricultavel,
-      areaVegetacao: updateFazendaDto.areaVegetacao,
-      produtorId: updateFazendaDto.produtorId,
-    }).where(eq(fazendas.id, id)).returning();
+    const updatedFazenda = await this.fazendasRepository.update(id, updateFazendaDto);
+
+    return updatedFazenda;
   }
 
-  async remove(id: number) {
-    await this.findOne(id);
+  async remove(id: number, user: CurrentUserDto) {
+    
+    await this.findOne(id, user);
 
-    return db.delete(fazendas).where(eq(fazendas.id, id)).returning();
+    await this.fazendasRepository.remove(id);
+
+    return { message: 'Fazenda deletada com sucesso' };
+  }
+
+  private async validateFazendaOwnership(produtorId: number, userId: number) {
+    const validation = await this.fazendasRepository.validateFazendaOwnership(produtorId, userId);
+
+    if (!validation) {
+      throw new ForbiddenException('Você não tem permissão para usar esta fazenda');
+    }
   }
 }

@@ -1,68 +1,61 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { CreateProdutorDto } from './dto/create-produtor.dto';
 import { UpdateProdutorDto } from './dto/update-produtor.dto';
-import { db } from '../db/connection';
-import { eq } from 'drizzle-orm';
-import { produtores } from '../db/schema/produtor';
 import { ConflictException } from '@nestjs/common';
+import { ProdutorRepository } from './produtor.repository';
 
 @Injectable()
 export class ProdutorService {
-  async create(createProdutorDto: CreateProdutorDto) {
+  constructor(private readonly produtorRepository: ProdutorRepository) {}
 
-    const produtorExistente = await db.select().from(produtores).where(eq(produtores.cpfOuCnpj, createProdutorDto.cpfOuCnpj)).limit(1);
+  async create(createProdutorDto: CreateProdutorDto) {
+    const produtorExistente = await this.findByCpfProdutor(createProdutorDto.cpfOuCnpj);
+
     if (produtorExistente.length > 0) {
       throw new ConflictException('CPF ou CNPJ já está em uso');
     }
 
-    if (!createProdutorDto.userId) {
-      throw new ConflictException('O ID do usuário é obrigatório');
-    }
-
-    return db.insert(produtores).values({
-      nome: createProdutorDto.nome,
-      cpfOuCnpj: createProdutorDto.cpfOuCnpj,
-      userId: createProdutorDto.userId, 
-      }).returning({
-        id: produtores.id,
-        nome: produtores.nome,
-        cpfOuCnpj: produtores.cpfOuCnpj,
-        createdAt: produtores.createdAt,
-      });
+    return this.produtorRepository.create(createProdutorDto);
   }
 
-  async findAll() {
-    return db.select().from(produtores).orderBy(produtores.nome);
+  async findAll(userId: number) {
+    return await this.produtorRepository.findAll(userId);
   }
 
-  async findOne(id: number) {
-
-    const produtor =  await db.select().from(produtores).where(eq(produtores.id, id));
+  async findOne(id: number, userId: number) {
+    const produtor = await this.produtorRepository.findOne(id, userId);
 
     if (produtor.length === 0) {
       throw new NotFoundException('Produtor não encontrado');
     }
 
-    return produtor[0];
+    return produtor;
   }
 
-  async update(id: number, updateProdutorDto: UpdateProdutorDto) {
-    await this.findOne(id);
+  async update(id: number, userId: number, UpdateProdutorDto: UpdateProdutorDto) {
+    await this.findOne(id, userId);
 
-    return db.update(produtores).set({
-      nome: updateProdutorDto.nome,
-      cpfOuCnpj: updateProdutorDto.cpfOuCnpj,
-    }).where(eq(produtores.id, id)).returning();
+    if (id) {
+      await this.validateProdutorOwnership(id, userId);
+    }
+
+    return this.produtorRepository.update(id, userId, UpdateProdutorDto);
   }
 
-  async remove(id: number) {
-    await this.findOne(id);
-
-    return db.delete(produtores).where(eq(produtores.id, id)).returning();
+  async removeByUser(id: number, userId: number) {
+    await this.findOne(id, userId);
+    return this.produtorRepository.remove(id);
   }
 
-  async findByUserId(userId: number) {
-    return await db.select().from(produtores).where(eq(produtores.userId, userId));
+  async findByCpfProdutor(cpfOuCnpj: string) {
+    return await this.produtorRepository.findByCpfProdutor(cpfOuCnpj);
   }
 
+  private async validateProdutorOwnership(produtorId: number, userId: number) {
+    const validation = await this.produtorRepository.validateProdutorOwnership(produtorId, userId);
+
+    if (!validation) {
+      throw new ForbiddenException('Você não tem permissão para usar este produtor');
+    }
+  }
 }

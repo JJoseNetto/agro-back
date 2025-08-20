@@ -1,15 +1,16 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { db } from 'src/db/connection';
-import { eq } from 'drizzle-orm';
-import { users } from '../db/schema/users';
 import * as bcrypt from 'bcrypt';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly usersRepository: UsersRepository) {}
+
   async create(createUserDto: CreateUserDto) {
-    const existingUser = await db.select().from(users).where(eq(users.email, createUserDto.email)).limit(1);
+
+    const existingUser = await this.findByEmail(createUserDto.email);
 
     if (existingUser.length > 0) {
       throw new ConflictException('Email já está em uso');
@@ -19,27 +20,15 @@ export class UsersService {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
 
-    return db.insert(users).values({
-      email: createUserDto.email,
-      password: hashedPassword,
-      nome: createUserDto.nome,
-      isActive: createUserDto.isActive ? 1 : 0,
-    }).returning({
-      id: users.id,
-      email: users.email,
-      nome: users.nome,
-      role: users.role,
-      isActive: users.isActive,
-      createdAt: users.createdAt,
-    });
+    return this.usersRepository.create(createUserDto, hashedPassword);
   }
 
   findAll() {
-    return db.select().from(users).orderBy(users.nome);
+    return this.usersRepository.findAll();
   }
 
   async findOne(id: number) {
-    const user = await db.select().from(users).where(eq(users.id, id));
+    const user = await this.usersRepository.findOne(id);
 
     if (user.length === 0) {
       throw new NotFoundException('Usuário não encontrado');
@@ -49,7 +38,7 @@ export class UsersService {
   }
 
   async findByEmail(email: string) {
-    return db.select().from(users).where(eq(users.email, email)).limit(1);
+    return this.usersRepository.findByEmail(email);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
@@ -57,7 +46,7 @@ export class UsersService {
 
     // Se está atualizando email, verificar se não está em uso
     if (updateUserDto.email) {
-      const existingUser = await db.select().from(users).where(eq(users.email, updateUserDto.email)).limit(1);
+      const existingUser = await this.findByEmail(updateUserDto.email);
 
       if (existingUser.length > 0 && existingUser[0].id !== id) {
         throw new ConflictException('Email já está em uso');
@@ -71,32 +60,19 @@ export class UsersService {
       updateData.password = await bcrypt.hash(updateUserDto.password, saltRounds);
     }
 
-    return db.update(users).set({...updateData, updateAt: new Date()}).where(eq(users.id, id)).returning();
+    return this.usersRepository.update(id, updateData);
   }
 
   async remove(id: number) {
     await this.findOne(id);
 
-    return db.delete(users).where(eq(users.id, id));
+    return this.usersRepository.remove(id);
   }
 
   async toggleActive(id: number) {
     const user = await this.findOne(id);
-    const newStatus = user.isActive === 1 ? 0 : 1;
+    const newStatus = user.isActive === true ? false : true;
 
-    return db.update(users)
-      .set({
-        isActive: newStatus,
-        updateAt: new Date(),
-      })
-      .where(eq(users.id, id))
-      .returning({
-        id: users.id,
-        email: users.email,
-        nome: users.nome,
-        role: users.role,
-        isActive: users.isActive,
-        updatedAt: users.updateAt,
-      });
+    return this.usersRepository.update(id, { isActive: newStatus });
   }
 }
