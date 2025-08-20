@@ -6,7 +6,6 @@ import { ApiTags, ApiCreatedResponse, ApiBody, ApiOperation, ApiResponse } from 
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
-import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
 @ApiTags('produtores')
 @Controller('produtor')
@@ -61,6 +60,6 @@ export class ProdutorController {
   @ApiResponse({ status: 404, description: 'Produtor não encontrado.' })
   async remove(@Param('id') id: string, @CurrentUser() user: CurrentUserDto) {
 
-    return user.role === 'admin' ? this.produtorService.remove(+id, user) : this.produtorService.removeByUser(+id, user.id);
+    return this.produtorService.removeByUser(+id, user.id);
   }
 }
