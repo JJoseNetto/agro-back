@@ -1,4 +1,4 @@
-import { pgTable, serial, numeric, varchar, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, serial, numeric, varchar, timestamp, integer } from "drizzle-orm/pg-core";
 import { produtores } from "./produtor";
 
 export const fazendas = pgTable("fazendas", {
@@ -9,6 +9,6 @@ export const fazendas = pgTable("fazendas", {
   areaTotal: numeric("area_total", { precision: 10, scale: 2 }).notNull(),
   areaAgricultavel: numeric("area_agricultavel", { precision: 10, scale: 2 }).notNull(),
   areaVegetacao: numeric("area_vegetacao", { precision: 10, scale: 2 }).notNull(),
-  produtorId: serial("produtor_id").notNull().references(() => produtores.id, { onDelete: "cascade" }),
+  produtorId: integer("produtor_id").notNull().references(() => produtores.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").defaultNow(),
 });
