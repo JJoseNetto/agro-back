@@ -138,7 +138,6 @@ Acesse a documentação interativa em: `http://localhost:3000/api`
 ### **Autenticação**
 ```http
 POST   /auth/login         # Login do usuário
-POST   /auth/register      # Registro de novo usuário
 ```
 
 ### **Endpoints Principais**
