@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FazendasController } from './fazendas.controller';
-import { FazendasService } from './fazendas.service';
-import { CreateFazendaDto } from './dto/create-fazenda.dto';
-import { UpdateFazendaDto } from './dto/update-fazenda.dto';
+import { FazendasController } from '../fazendas.controller';
+import { FazendasService } from '../fazendas.service';
+import { CreateFazendaDto } from '../dto/create-fazenda.dto';
+import { UpdateFazendaDto } from '../dto/update-fazenda.dto';
 
 const mockFazendasService = {
   create: jest.fn(),
@@ -27,6 +27,16 @@ function makeFazenda(overrides = {}) {
   };
 }
 
+function makeUser(overrides = {}) {
+  return {
+    id: 1,
+    nome: 'Test User',
+    email: 'test@example.com',
+    role: 'user',
+    ...overrides,
+  };
+}
+
 describe('FazendasController', () => {
   let controller: FazendasController;
 
@@ -42,6 +52,7 @@ describe('FazendasController', () => {
     }).compile();
 
     controller = module.get<FazendasController>(FazendasController);
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -59,54 +70,69 @@ describe('FazendasController', () => {
         areaVegetacao: '30.0',
         produtorId: 1,
       };
+      const user = makeUser();
       const created = makeFazenda({ ...dto });
       mockFazendasService.create.mockResolvedValue(created);
-      const result = await controller.create(dto);
+      
+      const result = await controller.create(dto, user);
+      
       expect(result).toEqual(created);
-      expect(mockFazendasService.create).toHaveBeenCalledWith(dto);
+      expect(mockFazendasService.create).toHaveBeenCalledWith(dto, user);
     });
   });
 
   describe('findAll', () => {
     it('deve retornar todas as fazendas', async () => {
-      const list = [makeFazenda(), makeFazenda({ id: 2, nome: 'Fazenda Santa Maria', cidade: 'Ribeirão Preto' })];
+      const user = makeUser();
+      const list = [makeFazenda(), makeFazenda({ id: 2, nome: 'Fazenda Santa Maria' })];
       mockFazendasService.findAll.mockResolvedValue(list);
-      const result = await controller.findAll();
+      
+      const result = await controller.findAll(user);
+      
       expect(result).toEqual(list);
-      expect(mockFazendasService.findAll).toHaveBeenCalled();
+      expect(mockFazendasService.findAll).toHaveBeenCalledWith(user);
     });
   });
 
   describe('findOne', () => {
     it('deve retornar uma fazenda pelo ID', async () => {
+      const user = makeUser();
       const fazenda = makeFazenda();
       mockFazendasService.findOne.mockResolvedValue(fazenda);
-      const result = await controller.findOne('1');
+      
+      const result = await controller.findOne('1', user);
+      
       expect(result).toEqual(fazenda);
-      expect(mockFazendasService.findOne).toHaveBeenCalledWith(1);
+      expect(mockFazendasService.findOne).toHaveBeenCalledWith(1, user);
     });
   });
 
   describe('update', () => {
     it('deve atualizar uma fazenda', async () => {
+      const user = makeUser();
       const updateDto: UpdateFazendaDto = {
         nome: 'Fazenda Atualizada',
         areaTotal: '200.0',
       };
       const updated = makeFazenda({ nome: updateDto.nome, areaTotal: updateDto.areaTotal });
       mockFazendasService.update.mockResolvedValue(updated);
-      const result = await controller.update('1', updateDto);
+      
+      const result = await controller.update('1', updateDto, user);
+      
       expect(result).toEqual(updated);
-      expect(mockFazendasService.update).toHaveBeenCalledWith(1, updateDto);
+      expect(mockFazendasService.update).toHaveBeenCalledWith(1, updateDto, user);
     });
   });
 
   describe('remove', () => {
     it('deve remover uma fazenda', async () => {
-      mockFazendasService.remove.mockResolvedValue({ success: true });
-      const result = await controller.remove('1');
-      expect(result).toEqual({ success: true });
-      expect(mockFazendasService.remove).toHaveBeenCalledWith(1);
+      const user = makeUser();
+      mockFazendasService.remove.mockResolvedValue({ message: 'Fazenda deletada com sucesso' });
+      
+      const result = await controller.remove('1', user);
+      
+      expect(result).toEqual({ message: 'Fazenda deletada com sucesso' });
+      expect(mockFazendasService.remove).toHaveBeenCalledWith(1, user);
     });
   });
 });

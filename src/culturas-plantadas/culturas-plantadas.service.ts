@@ -40,8 +40,8 @@ export class CulturasPlantadasService {
         return culturaPlantada;
     }
 
-    async remove(id: number, user: CurrentUserDto){
-        await this.findOne(id, user.id);
+    async remove(id: number, userId: number){
+        await this.findOne(id, userId);
 
         await this.culturasPlantadasRepository.remove(id);
 
@@ -51,8 +51,8 @@ export class CulturasPlantadasService {
     private async validateCulturasPlantadasOwnership(fazendaId: number, userId: number) {
         const validation = await this.culturasPlantadasRepository.validateCulturasPlantadasOwnership(fazendaId, userId);
     
-        if (!validation) {
-            throw new ForbiddenException('Você não tem permissão para usar esta cultura plantada');
+        if (!validation || validation.length === 0) {
+            throw new ForbiddenException('Você não tem permissão para usar esta fazenda!');
         }
     }
 }

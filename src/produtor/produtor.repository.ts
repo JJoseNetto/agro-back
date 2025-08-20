@@ -7,8 +7,8 @@ import { UpdateProdutorDto } from "./dto/update-produtor.dto";
 
 @Injectable()
 export class ProdutorRepository {
-   async create(createProdutorDto: CreateProdutorDto) {
-       return db.insert(produtores).values(createProdutorDto).returning();
+   async create(createProdutorDto: CreateProdutorDto, userId: number) {
+       return db.insert(produtores).values({ ...createProdutorDto, userId }).returning();
    }
 
    async findAll(userId: number) {

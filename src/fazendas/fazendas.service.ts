@@ -41,7 +41,7 @@ export class FazendasService {
       await this.validateFazendaOwnership(updateFazendaDto.produtorId, user.id);
     }
 
-    const updatedFazenda = await this.fazendasRepository.update(id, updateFazendaDto);
+    const [updatedFazenda] = await this.fazendasRepository.update(id, updateFazendaDto);
 
     return updatedFazenda;
   }
@@ -58,8 +58,8 @@ export class FazendasService {
   private async validateFazendaOwnership(produtorId: number, userId: number) {
     const validation = await this.fazendasRepository.validateFazendaOwnership(produtorId, userId);
 
-    if (!validation) {
-      throw new ForbiddenException('Você não tem permissão para usar esta fazenda');
+    if (!validation || validation.length === 0) {
+      throw new ForbiddenException('Você não tem permissão para usar este produtor');
     }
   }
 }

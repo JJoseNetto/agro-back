@@ -8,14 +8,16 @@ import { ProdutorRepository } from './produtor.repository';
 export class ProdutorService {
   constructor(private readonly produtorRepository: ProdutorRepository) {}
 
-  async create(createProdutorDto: CreateProdutorDto) {
+  async create(createProdutorDto: CreateProdutorDto, userId: number) {
     const produtorExistente = await this.findByCpfProdutor(createProdutorDto.cpfOuCnpj);
 
     if (produtorExistente.length > 0) {
       throw new ConflictException('CPF ou CNPJ já está em uso');
     }
 
-    return this.produtorRepository.create(createProdutorDto);
+    const result = await this.produtorRepository.create(createProdutorDto, userId)
+
+    return result[0];
   }
 
   async findAll(userId: number) {
@@ -39,7 +41,17 @@ export class ProdutorService {
       await this.validateProdutorOwnership(id, userId);
     }
 
-    return this.produtorRepository.update(id, userId, UpdateProdutorDto);
+    if (UpdateProdutorDto.cpfOuCnpj) {
+      const produtorExistente = await this.findByCpfProdutor(UpdateProdutorDto.cpfOuCnpj);
+
+      if (produtorExistente.length > 0) {
+        throw new ConflictException('CPF ou CNPJ já está em uso');
+      }
+    }
+
+    const result = await this.produtorRepository.update(id, userId, UpdateProdutorDto);
+
+    return result[0];
   }
 
   async removeByUser(id: number, userId: number) {

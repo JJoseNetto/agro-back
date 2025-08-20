@@ -55,8 +55,8 @@ export class UsersService {
 
     // Se está atualizando senha, fazer hash
     const updateData: any = { ...updateUserDto };
+    const saltRounds = 10;
     if (updateUserDto.password) {
-      const saltRounds = 10;
       updateData.password = await bcrypt.hash(updateUserDto.password, saltRounds);
     }
 

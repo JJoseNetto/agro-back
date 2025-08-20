@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersController } from '../users.controller';
+import { UsersService } from '../users.service';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 const mockUsersService = {
@@ -19,7 +19,7 @@ function makeUser(overrides = {}) {
     id: 1,
     email: 'user@example.com',
     nome: 'João Silva',
-    role: 'user' as const,
+    role: 'user',
     isActive: 1,
     createdAt: new Date(),
     ...overrides,
@@ -60,6 +60,7 @@ describe('UsersController', () => {
       mockUsersService.create.mockResolvedValue(created);
 
       const result = await controller.create(dto);
+
       expect(result).toEqual(created);
       expect(mockUsersService.create).toHaveBeenCalledWith(dto);
     });
@@ -88,6 +89,7 @@ describe('UsersController', () => {
       mockUsersService.findAll.mockResolvedValue(users);
 
       const result = await controller.findAll();
+
       expect(result).toEqual(users);
       expect(mockUsersService.findAll).toHaveBeenCalled();
     });
@@ -99,6 +101,7 @@ describe('UsersController', () => {
       mockUsersService.findOne.mockResolvedValue(user);
 
       const result = await controller.findOne(1);
+
       expect(result).toEqual(user);
       expect(mockUsersService.findOne).toHaveBeenCalledWith(1);
     });
@@ -123,6 +126,7 @@ describe('UsersController', () => {
       mockUsersService.update.mockResolvedValue(updated);
 
       const result = await controller.update(1, updateDto);
+
       expect(result).toEqual(updated);
       expect(mockUsersService.update).toHaveBeenCalledWith(1, updateDto);
     });
@@ -145,6 +149,7 @@ describe('UsersController', () => {
       mockUsersService.remove.mockResolvedValue({ success: true });
 
       const result = await controller.remove(1);
+
       expect(result).toEqual({ success: true });
       expect(mockUsersService.remove).toHaveBeenCalledWith(1);
     });
@@ -165,6 +170,7 @@ describe('UsersController', () => {
       mockUsersService.toggleActive.mockResolvedValue(toggledUser);
 
       const result = await controller.toggleActive(1);
+
       expect(result).toEqual(toggledUser);
       expect(mockUsersService.toggleActive).toHaveBeenCalledWith(1);
     });

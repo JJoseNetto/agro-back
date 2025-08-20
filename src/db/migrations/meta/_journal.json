@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1753923583364,
-      "tag": "0000_lonely_forge",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1753925023036,
-      "tag": "0001_naive_crystal",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1754435975730,
-      "tag": "0002_glamorous_franklin_storm",
+      "when": 1755517051154,
+      "tag": "0000_opposite_living_tribunal",
       "breakpoints": true
     }
   ]

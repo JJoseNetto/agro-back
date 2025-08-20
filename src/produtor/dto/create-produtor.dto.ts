@@ -14,5 +14,5 @@ export class CreateProdutorDto {
 
     @ApiProperty({ example: 1, description: 'ID do usuário associado ao produtor' })
     @IsOptional()
-    userId: number;
+    userId?: number;
 }

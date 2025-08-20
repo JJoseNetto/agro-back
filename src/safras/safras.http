@@ -3,7 +3,7 @@ POST http://localhost:3000/safras
 Content-Type: application/json
 
 {
-  "ano": 2025
+  "ano": 2027
 }
 
 ### Listar todas as safras

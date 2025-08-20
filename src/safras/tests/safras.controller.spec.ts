@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SafrasController } from './safras.controller';
-import { SafrasService } from './safras.service';
-import { CreateSafraDto } from './dto/create-safra.dto';
-import { UpdateSafraDto } from './dto/update-safra.dto';
+import { SafrasController } from '../safras.controller';
+import { SafrasService } from '../safras.service';
+import { CreateSafraDto } from '../dto/create-safra.dto';
+import { UpdateSafraDto } from '../dto/update-safra.dto';
 
 const mockSafrasService = {
   create: jest.fn(),
@@ -36,6 +36,7 @@ describe('SafrasController', () => {
     }).compile();
 
     controller = module.get<SafrasController>(SafrasController);
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -90,9 +91,12 @@ describe('SafrasController', () => {
 
   describe('remove', () => {
     it('deve remover uma safra', async () => {
-      mockSafrasService.remove.mockResolvedValue({ success: true });
+      const mockRowList = [] as any;
+      mockSafrasService.remove.mockResolvedValue(mockRowList);
+      
       const result = await controller.remove('1');
-      expect(result).toEqual({ success: true });
+      
+      expect(result).toEqual(mockRowList);
       expect(mockSafrasService.remove).toHaveBeenCalledWith(1);
     });
   });

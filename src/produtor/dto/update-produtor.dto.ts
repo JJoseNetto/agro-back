@@ -14,5 +14,5 @@ export class UpdateProdutorDto extends PartialType(CreateProdutorDto) {
 
     @ApiProperty({ example: 1, description: 'ID do usuário associado ao produtor' })
     @IsNotEmpty({message: 'O ID do usuário é obrigatório'})
-    userId: number;
+    userId?: number;
 }

@@ -1,0 +1,30 @@
+### Criar nova cultura plantada
+POST http://localhost:3000/culturas-plantadas
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+
+{
+  "nome": "Soja",
+  "fazendaId": 6,
+  "safraId": 1
+}
+
+### Listar todas as culturas plantadas
+GET http://localhost:3000/culturas-plantadas
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+### Buscar cultura plantada por ID
+GET http://localhost:3000/culturas-plantadas/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+
+### Atualizar cultura plantada
+PATCH http://localhost:3000/culturas-plantadas/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+
+{
+  "nome": "Milho"
+}
+
+### Deletar cultura plantada
+DELETE http://localhost:3000/culturas-plantadas/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI

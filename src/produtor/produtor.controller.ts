@@ -19,14 +19,7 @@ export class ProdutorController {
   @ApiCreatedResponse({ description: 'Produtor criado com sucesso.' })
   @ApiBody({ type: CreateProdutorDto })
   create(@Body() createProdutorDto: CreateProdutorDto, @CurrentUser() user: CurrentUserDto) {
-
-    const produtorData = {
-      ...createProdutorDto,
-      userId: user.role === 'admin' ? (createProdutorDto.userId || user.id) : user.id
-    };
-
-
-    return this.produtorService.create(produtorData);
+    return this.produtorService.create(createProdutorDto, user.id);
   }
 
   @Get()

@@ -6,27 +6,32 @@
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white" alt="JWT" />
 </p>
 
 <p align="center">
-  Sistema completo de gerenciamento de produtores rurais, fazendas, safras e culturas plantadas.
+  Sistema completo de gerenciamento de produtores rurais, fazendas, safras e culturas plantadas com autenticação e autorização.
 </p>
 
 ---
 
 ## 📋 Sobre o Projeto
 
-A **Agro Management API** é uma aplicação backend robusta desenvolvida para gerenciar o cadastro e controle de produtores rurais, permitindo o registro completo de propriedades, safras e culturas plantadas. O sistema foi projetado seguindo as melhores práticas de desenvolvimento, com arquitetura modular, validações rigorosas e documentação completa.
+A **Agro Management API** é uma aplicação backend robusta desenvolvida para gerenciar o cadastro e controle de produtores rurais, permitindo o registro completo de propriedades, safras e culturas plantadas. O sistema foi projetado seguindo as melhores práticas de desenvolvimento, com arquitetura modular, validações rigorosas, documentação completa e sistema de autenticação seguro.
 
 ### 🎯 Funcionalidades Principais
 
+- ✅ **Sistema de Autenticação** - JWT com guards e decorators
+- ✅ **Gestão de Usuários** - CRUD completo com controle de ativação
 - ✅ **Gestão de Produtores Rurais** - Cadastro completo com CPF/CNPJ
-- ✅ **Controle de Fazendas** - Propriedades com áreas detalhadas
+- ✅ **Controle de Fazendas** - Propriedades com áreas detalhadas e validações
 - ✅ **Gerenciamento de Safras** - Controle por ano agrícola
 - ✅ **Culturas Plantadas** - Registro por fazenda e safra
 - ✅ **Validações de Negócio** - Regras específicas do agronegócio
+- ✅ **Controle de Propriedade** - Usuários só acessam seus próprios dados
 - ✅ **API RESTful** - Endpoints padronizados e documentados
 - ✅ **Documentação Swagger** - Interface interativa para testes
+- ✅ **Testes Completos** - Unitários e E2E com alta cobertura
 
 ---
 
@@ -37,24 +42,37 @@ A **Agro Management API** é uma aplicação backend robusta desenvolvida para g
 - **[TypeScript](https://www.typescriptlang.org/)** - Superset tipado do JavaScript
 - **[PostgreSQL](https://www.postgresql.org/)** - Banco de dados relacional
 - **[Drizzle ORM](https://orm.drizzle.team/)** - TypeScript ORM type-safe
+- **[JWT](https://jwt.io/)** - Autenticação stateless
+- **[bcrypt](https://www.npmjs.com/package/bcrypt)** - Hash de senhas
 
 ### **Ferramentas de Desenvolvimento**
 - **[Docker](https://www.docker.com/)** - Containerização da aplicação
 - **[Swagger/OpenAPI](https://swagger.io/)** - Documentação automática da API
 - **[Class Validator](https://github.com/typestack/class-validator)** - Validação de dados
 - **[Jest](https://jestjs.io/)** - Framework de testes
+- **[ESLint](https://eslint.org/)** - Linting de código
+- **[Prettier](https://prettier.io/)** - Formatação de código
 
 ### **Arquitetura**
 ```
 src/
-├── common/           # Utilitários e validators compartilhados
-├── db/              # Configurações de banco e schemas
-├── produtor/        # Módulo de produtores rurais
-├── fazendas/        # Módulo de fazendas/propriedades
-├── safras/          # Módulo de safras
-├── culturas-plantadas/  # Módulo de culturas
-├── env.ts           # Configurações de ambiente
-└── main.ts          # Ponto de entrada da aplicação
+├── auth/                # Sistema de autenticação
+│   ├── decorators/      # Current user decorator
+│   ├── dto/            # DTOs de autenticação
+│   ├── guards/         # JWT e Role guards
+│   └── strategies/     # Estratégias de autenticação
+├── common/             # Utilitários e validators compartilhados
+│   └── validators/     # Validadores customizados (CPF/CNPJ)
+├── db/                 # Configurações de banco e schemas
+│   ├── migrations/     # Migrações do banco
+│   └── schema/         # Esquemas das tabelas
+├── users/              # Módulo de usuários
+├── produtor/           # Módulo de produtores rurais
+├── fazendas/           # Módulo de fazendas/propriedades
+├── safras/             # Módulo de safras
+├── culturas-plantadas/ # Módulo de culturas plantadas
+├── env.ts              # Configurações de ambiente
+└── main.ts             # Ponto de entrada da aplicação
 ```
 
 ---
@@ -86,6 +104,7 @@ cp .env.example .env
 # Configure suas variáveis no arquivo .env
 DATABASE_URL="postgresql://username:password@localhost:5432/agro_db"
 PORT=3000
+JWT_SECRET="seu_jwt_secret_aqui"
 ```
 
 ### **4. Suba o banco de dados (Docker)**
@@ -116,23 +135,39 @@ A API estará disponível em: `http://localhost:3000`
 ### **Swagger UI**
 Acesse a documentação interativa em: `http://localhost:3000/api`
 
+### **Autenticação**
+```http
+POST   /auth/login         # Login do usuário
+POST   /auth/register      # Registro de novo usuário
+```
+
 ### **Endpoints Principais**
 
-#### **Produtores**
+#### **Usuários**
 ```http
-GET    /produtor           # Lista todos os produtores
+GET    /users              # Lista todos os usuários
+POST   /users              # Cria novo usuário
+GET    /users/:id          # Busca usuário por ID
+PATCH  /users/:id          # Atualiza usuário
+DELETE /users/:id          # Remove usuário
+PATCH  /users/:id/toggle-active # Ativa/desativa usuário
+```
+
+#### **Produtores** 🔐
+```http
+GET    /produtor           # Lista produtores do usuário logado
 POST   /produtor           # Cria novo produtor
 GET    /produtor/:id       # Busca produtor por ID
 PUT    /produtor/:id       # Atualiza produtor
 DELETE /produtor/:id       # Remove produtor
 ```
 
-#### **Fazendas**
+#### **Fazendas** 🔐
 ```http
-GET    /fazendas           # Lista todas as fazendas
+GET    /fazendas           # Lista fazendas do usuário logado
 POST   /fazendas           # Cria nova fazenda
 GET    /fazendas/:id       # Busca fazenda por ID
-PATCH  /fazendas/:id       # Atualiza fazenda
+PUT    /fazendas/:id       # Atualiza fazenda
 DELETE /fazendas/:id       # Remove fazenda
 ```
 
@@ -145,14 +180,16 @@ PATCH  /safras/:id         # Atualiza safra
 DELETE /safras/:id         # Remove safra
 ```
 
-#### **Culturas Plantadas**
+#### **Culturas Plantadas** 🔐
 ```http
-GET    /culturas-plantadas    # Lista todas as culturas
+GET    /culturas-plantadas    # Lista culturas do usuário logado
 POST   /culturas-plantadas    # Cria nova cultura
 GET    /culturas-plantadas/:id # Busca cultura por ID
 PATCH  /culturas-plantadas/:id # Atualiza cultura
 DELETE /culturas-plantadas/:id # Remove cultura
 ```
+
+**🔐** = Endpoints protegidos que requerem autenticação
 
 ---
 
@@ -178,16 +215,33 @@ npm run test:e2e
 npm run test:watch
 ```
 
+### **Cobertura de Testes**
+- ✅ Testes unitários para todos os serviços
+- ✅ Testes de controllers
+- ✅ Testes de repositories
+- ✅ Testes end-to-end
+- ✅ Mocks completos para banco de dados
+- ✅ Factories para geração de dados de teste
+
 ---
 
 ## 🗄️ Banco de Dados
 
 ### **Schema Principal**
 
+#### **Users**
+- `id` - Identificador único
+- `nome` - Nome do usuário
+- `email` - Email único
+- `password` - Senha hasheada
+- `isActive` - Status ativo/inativo
+- `createdAt` - Data de criação
+
 #### **Produtores**
 - `id` - Identificador único
 - `nome` - Nome do produtor
-- `cpfOuCnpj` - CPF ou CNPJ (validado)
+- `cpfOuCnpj` - CPF ou CNPJ (validado e único)
+- `userId` - Referência ao usuário proprietário
 - `createdAt` - Data de criação
 
 #### **Fazendas**
@@ -199,6 +253,7 @@ npm run test:watch
 - `areaAgricultavel` - Área agricultável
 - `areaVegetacao` - Área de vegetação
 - `produtorId` - Referência ao produtor
+- `createdAt` - Data de criação
 
 #### **Safras**
 - `id` - Identificador único
@@ -210,6 +265,15 @@ npm run test:watch
 - `nome` - Nome da cultura (ex: Soja, Milho)
 - `fazendaId` - Referência à fazenda
 - `safraId` - Referência à safra
+- `createdAt` - Data de criação
+
+### **Relacionamentos e Constraints**
+- `users` 1:N `produtores` (CASCADE)
+- `produtores` 1:N `fazendas` (CASCADE)
+- `fazendas` 1:N `culturas_plantadas` (CASCADE)
+- `safras` 1:N `culturas_plantadas` (CASCADE)
+- CPF/CNPJ único na tabela produtores
+- Email único na tabela users
 
 ### **Comandos do Banco**
 ```bash
@@ -222,8 +286,8 @@ npm run db:migrate
 # Resetar banco
 npm run db:reset
 
-# Seed de dados
-npm run db:seed
+# Interface visual do banco
+npm run db:studio
 ```
 
 ---
@@ -268,6 +332,7 @@ npm run start:prod         # Inicia em modo produção
 npm run test               # Testes unitários
 npm run test:e2e           # Testes end-to-end
 npm run test:cov           # Coverage dos testes
+npm run test:watch         # Testes em modo watch
 
 # Banco de Dados
 npm run db:generate        # Gera migração
@@ -291,12 +356,70 @@ npm run format             # Formata código
 3. **Relacionamentos** - Integridade referencial entre entidades
 4. **Dados Obrigatórios** - Validação de campos required
 5. **Formatos** - Validação de tipos e formatos de dados
+6. **Unicidade** - CPF/CNPJ único por produtor, email único por usuário
+7. **Propriedade** - Usuários só podem acessar dados próprios
+8. **Autenticação** - JWT obrigatório para operações protegidas
 
 ### **Relacionamentos**
+- Um usuário pode ter **0 a N produtores**
+- Um produtor pertence a **1 usuário**
 - Um produtor pode ter **0 a N fazendas**
 - Uma fazenda pertence a **1 produtor**
 - Uma cultura plantada pertence a **1 fazenda** e **1 safra**
 - Uma safra pode ter **N culturas plantadas**
+
+### **Sistema de Propriedade**
+- Todos os dados são filtrados por usuário logado
+- Validação automática de propriedade em operações CRUD
+- Cascade delete para manter integridade
+
+---
+
+## 🔐 Autenticação e Autorização
+
+### **Sistema de Autenticação**
+- **JWT (JSON Web Tokens)** para autenticação stateless
+- **bcrypt** para hash seguro de senhas
+- **Guards** personalizados para proteção de rotas
+- **Decorators** para extração de dados do usuário
+
+### **Middlewares e Guards**
+- `JwtAuthGuard` - Proteção de rotas autenticadas
+- `RolesGuard` - Controle de acesso baseado em roles
+- `@CurrentUser()` - Decorator para acessar usuário logado
+
+### **Fluxo de Autenticação**
+1. Usuário faz login com email/senha
+2. Sistema valida credenciais e gera JWT
+3. Cliente envia JWT no header Authorization
+4. Guards validam token e extraem dados do usuário
+5. Rotas protegidas acessam dados filtrados por usuário
+
+---
+
+## 🧩 Padrões e Arquitetura
+
+### **Padrões Implementados**
+- **Repository Pattern** - Separação de lógica de acesso a dados
+- **DTO Pattern** - Transferência segura de dados
+- **Factory Pattern** - Geração de dados para testes
+- **Dependency Injection** - Injeção de dependências do NestJS
+- **Modular Architecture** - Separação por domínios
+
+### **Estrutura de Módulos**
+Cada módulo segue a estrutura:
+```
+modulo/
+├── dto/                # Data Transfer Objects
+├── decorators/         # Decorators específicos (se houver)
+├── guards/            # Guards específicos (se houver)
+├── strategies/        # Estratégias específicas (se houver)
+├── test/              # Testes específicos
+├── modulo.controller.ts
+├── modulo.service.ts
+├── modulo.repository.ts
+└── modulo.module.ts
+```
 
 ---
 
@@ -313,6 +436,8 @@ npm run format             # Formata código
 - Escrever testes para novas funcionalidades
 - Documentar APIs com Swagger
 - Usar commits convencionais
+- Implementar validações de negócio
+- Manter cobertura de testes alta
 
 ---
 

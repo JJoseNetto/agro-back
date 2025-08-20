@@ -1,0 +1,39 @@
+### Criar um novo produtor
+POST http://localhost:3000/produtor
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+
+{
+    "nome": "Gabi",
+    "cpfOuCnpj": "65554647049"
+}
+###
+
+### Listar todos os produtores
+GET http://localhost:3000/produtor
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+###
+
+### Obter um produtor específico
+GET http://localhost:3000/produtor/6
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+###
+
+### Atualizar um produtor
+PUT http://localhost:3000/produtor/6
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+
+{
+    "nome": "Usuario Teste",
+    "cpfOuCnpj": "12435243677"
+}
+###
+
+### Deletar um produtor
+DELETE http://localhost:3000/produtor/2
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+

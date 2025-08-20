@@ -11,7 +11,7 @@ export class UsersRepository {
             email: createUserDto.email,
             password: hashedPassword,
             nome: createUserDto.nome,
-            isActive: createUserDto.isActive ? true : false,
+            isActive: Boolean(createUserDto.isActive),
         }).returning({
             id: users.id,
             email: users.email,

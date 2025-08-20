@@ -1,15 +1,16 @@
 ### Criar um nova fazenda
 POST http://localhost:3000/fazendas
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
 
 {
-    "nome": "Fazenda Boa Vista",
-    "cidade": "Campo Grande",
-    "estado": "MS",
+    "nome": "Fazenda Bonifacio",
+    "cidade": "Conceição de Ipanema",
+    "estado": "MG",
     "areaTotal": "1000",
     "areaAgricultavel": "800",
     "areaVegetacao": "200",
-    "produtorId": 1
+    "produtorId": 4
 }
 
 ###
@@ -17,6 +18,8 @@ Content-Type: application/json
 ### Listar todas as fazendas
 GET http://localhost:3000/fazendas
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTY1MTQ5OSwiZXhwIjoxNzU1NjU1MDk5fQ.qu8vHsL459tHkb3kd5CFPvRGazp9EHv8V5f44ODnnlE
+
 ###
 
 ### Obter uma fazenda específica
@@ -35,7 +38,7 @@ Content-Type: application/json
     "areaTotal": "1200",
     "areaAgricultavel": "900",
     "areaVegetacao": "300",
-    "produtorId": 1
+    "produtorId": 2
 }
 ###
 

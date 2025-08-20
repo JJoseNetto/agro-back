@@ -15,6 +15,7 @@ export class CulturasPlantadasController {
     constructor(private readonly culturasPlantadasService: CulturasPlantadasService) { }
 
     @Post()
+    @ApiOperation({ summary: 'Criar nova cultura plantada' })
     @ApiCreatedResponse({ description: 'Cultura plantada criada com sucesso.' })
     @ApiBody({ type: CreateCulturaPlantadaDto })
     create(@Body() createCulturaPlantadaDto: CreateCulturaPlantadaDto, @CurrentUser() user: CurrentUserDto ) {
@@ -37,13 +38,19 @@ export class CulturasPlantadasController {
     }
 
     @Patch(':id')
+    @ApiOperation({ summary: 'Atualizar cultura plantada' })
+    @ApiResponse({ status: 200, description: 'Cultura plantada atualizada com sucesso.' })
+    @ApiResponse({ status: 404, description: 'Cultura plantada não encontrada.' })
     @ApiBody({ type: UpdateCulturaPlantadaDto })
     update(@Param('id') id: string, @Body() updateCulturaPlantadaDto: UpdateCulturaPlantadaDto, @CurrentUser() user: CurrentUserDto) {
         return this.culturasPlantadasService.update(+id, updateCulturaPlantadaDto, user);
     }
 
-    // @Delete(':id')
-    // remove(@Param('id') id: string) {
-    //     return this.culturasPlantadasService.remove(+id);
-    // }
+    @Delete(':id')
+    @ApiOperation({ summary: 'Remover cultura plantada' })
+    @ApiResponse({ status: 200, description: 'Cultura plantada removida com sucesso.' })
+    @ApiResponse({ status: 404, description: 'Cultura plantada não encontrada.' })
+    remove(@Param('id') id: string, @CurrentUser() user: CurrentUserDto) {
+        return this.culturasPlantadasService.remove(+id, user.id);
+    }
 }
