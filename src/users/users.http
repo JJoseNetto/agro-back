@@ -20,8 +20,8 @@ PATCH http://localhost:3000/users/1
 Content-Type: application/json
 
 {
-  "nome": "João Silva Santos",
-  "email": "joao.santos@example.com"
+  "nome": "Usuario Alternativo",
+  "email": "teste@example.com"
 }
 
 ### Atualizar senha do usuário
@@ -43,9 +43,9 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email": "joao@example.com",
+  "email": "example@example.com",
   "password": "senha123456",
-  "nome": "Outro João"
+  "nome": "Exemplo Teste"
 }
 
 ### Teste de erro - Usuário não encontrado
@@ -74,7 +74,7 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "Alice@example.com",
+  "email": "example@example.com",
   "password": "senha1234567"
 }
 

@@ -1,7 +1,7 @@
 ### Criar um nova fazenda
 POST http://localhost:3000/fazendas
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTcyNDE4MSwiZXhwIjoxNzU1NzI3NzgxfQ.EihW2gMVlJ115dicoGyErYif2sCDLSY2eu3Q-S7qOHI
+Authorization: Bearer <Token>
 
 {
     "nome": "Fazenda Bonifacio",
@@ -18,18 +18,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQ
 ### Listar todas as fazendas
 GET http://localhost:3000/fazendas
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IkFsaWNlQGV4YW1wbGUuY29tIiwic3ViIjoxLCJub21lIjoiQWxpY2UiLCJyb2xlIjoidXNlciIsImlhdCI6MTc1NTY1MTQ5OSwiZXhwIjoxNzU1NjU1MDk5fQ.qu8vHsL459tHkb3kd5CFPvRGazp9EHv8V5f44ODnnlE
+Authorization: Bearer <Token>
 
 ###
 
 ### Obter uma fazenda específica
 GET http://localhost:3000/fazendas/1
 Content-Type: application/json
+Authorization: Bearer <Token>
+
 ###
 
 ### Atualizar uma fazenda
 PUT http://localhost:3000/fazendas/1
 Content-Type: application/json
+Authorization: Bearer <Token>
 
 {
     "nome": "Fazenda Boa Vista Atualizada",
@@ -45,4 +48,6 @@ Content-Type: application/json
 ### Deletar uma fazenda
 DELETE http://localhost:3000/fazendas/1
 Content-Type: application/json
+Authorization: Bearer <Token>
+
 ###
