@@ -19,7 +19,7 @@ export class AuthService {
 
     const user = users[0];
     
-    if (user.isActive === 0) {
+    if (user.isActive === false) {
       throw new UnauthorizedException('Usuário inativo');
     }
 

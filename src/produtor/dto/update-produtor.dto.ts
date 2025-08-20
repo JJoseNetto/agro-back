@@ -11,4 +11,8 @@ export class UpdateProdutorDto extends PartialType(CreateProdutorDto) {
     @ApiProperty({ example: '123.123.123-00', description: 'CPF ou CNPJ do produtor' })
     @IsCpfOuCnpj({ message: 'CPF ou CNPJ inválido' })
     cpfOuCnpj?: string;
+
+    @ApiProperty({ example: 1, description: 'ID do usuário associado ao produtor' })
+    @IsNotEmpty({message: 'O ID do usuário é obrigatório'})
+    userId: number;
 }

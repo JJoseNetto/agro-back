@@ -1,52 +1,58 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCulturaPlantadaDto } from './dto/create-cultura-plantada.dto';
 import { UpdateCulturaPlantadaDto } from './dto/update-cultura-plantada.dto';
-import { db } from 'src/db/connection';
-import { eq } from 'drizzle-orm';
-import { culturasPlantadas } from '../db/schema/culturas_plantadas';
+import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
+import { CulturasPlantadasRepository } from './culturas-plantadas.repository';
 
 @Injectable()
 export class CulturasPlantadasService {
-    create(createCulturaPlantadaDto: CreateCulturaPlantadaDto) {
-        return db.insert(culturasPlantadas).values({
-            nome: createCulturaPlantadaDto.nome,
-            fazendaId: createCulturaPlantadaDto.fazendaId,
-            safraId: createCulturaPlantadaDto.safraId,
-        }).returning({
-            id: culturasPlantadas.id,
-            nome: culturasPlantadas.nome,
-            fazendaId: culturasPlantadas.fazendaId,
-            safraId: culturasPlantadas.safraId,
-            createdAt: culturasPlantadas.createdAt,
-        });
+    constructor(private readonly culturasPlantadasRepository: CulturasPlantadasRepository) {}
+
+    async create(createCulturaPlantadaDto: CreateCulturaPlantadaDto, user: CurrentUserDto){
+        await this.validateCulturasPlantadasOwnership(createCulturaPlantadaDto.fazendaId, user.id);
+
+        const culturaPlantada = await this.culturasPlantadasRepository.create(createCulturaPlantadaDto);
+
+        return culturaPlantada;
     }
 
-    findAll() {
-        return db.select().from(culturasPlantadas).orderBy(culturasPlantadas.nome);
+    async findAll(user: CurrentUserDto) {
+        return this.culturasPlantadasRepository.findAll(user);
     }
 
-    findOne(id: number) {
-        return db.select().from(culturasPlantadas).where(eq(culturasPlantadas.id, id));
+    async findOne(id: number, userId: number) {
+        const result = await this.culturasPlantadasRepository.findOne(id, userId);
+
+        if (!result) {
+            throw new NotFoundException('Cultura plantada não encontrada');
+        }
+
+        return result;
     }
 
-    update(id: number, updateCulturaPlantadaDto: UpdateCulturaPlantadaDto) {
-        return db.update(culturasPlantadas)
-            .set({
-                nome: updateCulturaPlantadaDto.nome,
-                fazendaId: updateCulturaPlantadaDto.fazendaId,
-                safraId: updateCulturaPlantadaDto.safraId,
-            })
-            .where(eq(culturasPlantadas.id, id))
-            .returning({
-                id: culturasPlantadas.id,
-                nome: culturasPlantadas.nome,
-                fazendaId: culturasPlantadas.fazendaId,
-                safraId: culturasPlantadas.safraId,
-                createdAt: culturasPlantadas.createdAt,
-            });
+    async update(id: number, updateCulturaPlantadaDto: UpdateCulturaPlantadaDto, user: CurrentUserDto) {
+        const VerifyCulturaPlantada = await this.findOne(id, user.id);
+
+        await this.validateCulturasPlantadasOwnership(VerifyCulturaPlantada.fazendaId, user.id);
+
+        const culturaPlantada = await this.culturasPlantadasRepository.update(id, updateCulturaPlantadaDto);
+
+        return culturaPlantada;
     }
 
-    remove(id: number) {
-        return db.delete(culturasPlantadas).where(eq(culturasPlantadas.id, id));
+    async remove(id: number, user: CurrentUserDto){
+        await this.findOne(id, user.id);
+
+        await this.culturasPlantadasRepository.remove(id);
+
+        return { message: 'Cultura plantada removida com sucesso' };
+    }
+
+    private async validateCulturasPlantadasOwnership(fazendaId: number, userId: number) {
+        const validation = await this.culturasPlantadasRepository.validateCulturasPlantadasOwnership(fazendaId, userId);
+    
+        if (!validation) {
+            throw new ForbiddenException('Você não tem permissão para usar esta cultura plantada');
+        }
     }
 }
