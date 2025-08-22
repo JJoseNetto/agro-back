@@ -71,6 +71,7 @@ src/
 ├── fazendas/           # Módulo de fazendas/propriedades
 ├── safras/             # Módulo de safras
 ├── culturas-plantadas/ # Módulo de culturas plantadas
+├── dashboard/          # Módulo de dashboard
 ├── env.ts              # Configurações de ambiente
 └── main.ts             # Ponto de entrada da aplicação
 ```
@@ -138,6 +139,7 @@ Acesse a documentação interativa em: `http://localhost:3000/api`
 ### **Autenticação**
 ```http
 POST   /auth/login         # Login do usuário
+POST   /auth/register      # Registro de novo usuário
 ```
 
 ### **Endpoints Principais**
@@ -187,8 +189,26 @@ GET    /culturas-plantadas/:id # Busca cultura por ID
 PATCH  /culturas-plantadas/:id # Atualiza cultura
 DELETE /culturas-plantadas/:id # Remove cultura
 ```
+### **Dashboard** 🔐
+```http
+GET    /dashboard          # Métricas e estatísticas do agronegócio
+```
+
 
 **🔐** = Endpoints protegidos que requerem autenticação
+
+---
+
+## 📊 Dashboard e Métricas
+
+### **Funcionalidades do Dashboard**
+- 📈 **Total de Fazendas** - Quantidade total por usuário
+- 🌾 **Área Total** - Soma das áreas de todas as fazendas
+- 📊 **Distribuição por Estado** - Fazendas agrupadas por UF
+- 🌱 **Culturas por Safra** - Análise de plantio por período
+- 📋 **Top Culturas** - Culturas mais plantadas
+- 📍 **Fazendas por Cidade** - Distribuição geográfica
+- 🏭 **Uso do Solo** - Proporção área agricultável vs vegetação
 
 ---
 
