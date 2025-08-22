@@ -1,27 +1,12 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+import { Injectable, ConflictException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UsersRepository } from './users.repository';
+import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
-
-  async create(createUserDto: CreateUserDto) {
-
-    const existingUser = await this.findByEmail(createUserDto.email);
-
-    if (existingUser.length > 0) {
-      throw new ConflictException('Email já está em uso');
-    }
-
-    // Hash da senha
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
-
-    return this.usersRepository.create(createUserDto, hashedPassword);
-  }
 
   findAll() {
     return this.usersRepository.findAll();
@@ -41,8 +26,12 @@ export class UsersService {
     return this.usersRepository.findByEmail(email);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto, user: CurrentUserDto) {
     await this.findOne(id);
+
+    if (user.role === 'user' && user.id !== id) {
+      throw new ForbiddenException('Você não tem permissão para atualizar este usuário');
+    }
 
     // Se está atualizando email, verificar se não está em uso
     if (updateUserDto.email) {

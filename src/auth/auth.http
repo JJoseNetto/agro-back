@@ -1,0 +1,20 @@
+### Cadastro novo usuário
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "senha1234567",
+  "nome": "Admin",
+  "isActive": true
+}
+
+
+### Login de usuário
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "novasenha123"
+}

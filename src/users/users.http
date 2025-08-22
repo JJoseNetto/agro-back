@@ -1,32 +1,24 @@
-### Criar novo usuário
-POST http://localhost:3000/users
-Content-Type: application/json
-
-{
-  "email": "admin@sistema.com",
-  "password": "senha1234567",
-  "nome": "Admin",
-  "isActive": true
-}
-
 ### Listar todos os usuários
 GET http://localhost:3000/users
+Authorization: Bearer <token>
 
 ### Buscar usuário por ID
 GET http://localhost:3000/users/1
+Authorization: Bearer <token>
 
 ### Atualizar usuário
 PATCH http://localhost:3000/users/1
 Content-Type: application/json
+Authorization: Bearer <token>
 
 {
-  "nome": "Usuario Alternativo",
-  "email": "teste@example.com"
+  "password": "senha1234567"
 }
 
 ### Atualizar senha do usuário
 PATCH http://localhost:3000/users/2
 Content-Type: application/json
+Authorization: Bearer <token>
 
 {
   "password": "novasenha123"
@@ -34,48 +26,8 @@ Content-Type: application/json
 
 ### Ativar/Desativar usuário
 PATCH http://localhost:3000/users/1/toggle-active
+Authorization: Bearer <token>
 
 ### Deletar usuário
 DELETE http://localhost:3000/users/1
-
-### Teste de erro - Email duplicado
-POST http://localhost:3000/users
-Content-Type: application/json
-
-{
-  "email": "example@example.com",
-  "password": "senha123456",
-  "nome": "Exemplo Teste"
-}
-
-### Teste de erro - Usuário não encontrado
-GET http://localhost:3000/users/999
-
-
-### Login de usuário
-POST http://localhost:3000/auth/login
-Content-Type: application/json
-
-{
-  "email": "admin@sistema.com",
-  "password": "novasenha123"
-}
-
-###
-
-### Listar todos os usuários
-GET http://localhost:3000/users
 Authorization: Bearer <token>
-
-
-
-### Login de usuário
-POST http://localhost:3000/auth/login
-Content-Type: application/json
-
-{
-  "email": "example@example.com",
-  "password": "senha1234567"
-}
-
-###

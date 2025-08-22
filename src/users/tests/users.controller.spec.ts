@@ -4,6 +4,7 @@ import { UsersService } from '../users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ConflictException, NotFoundException } from '@nestjs/common';
+import { CurrentUserDto } from 'src/auth/dto/current-user.dto';
 
 const mockUsersService = {
   create: jest.fn(),
@@ -48,38 +49,6 @@ describe('UsersController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('create', () => {
-    it('deve criar um usuário', async () => {
-      const dto: CreateUserDto = {
-        email: 'novo@example.com',
-        password: 'senha123',
-        nome: 'Novo Usuário',
-        isActive: true,
-      };
-      const created = [makeUser({ ...dto, password: undefined })];
-      mockUsersService.create.mockResolvedValue(created);
-
-      const result = await controller.create(dto);
-
-      expect(result).toEqual(created);
-      expect(mockUsersService.create).toHaveBeenCalledWith(dto);
-    });
-
-    it('deve lançar erro se email já existir', async () => {
-      const dto: CreateUserDto = {
-        email: 'existe@example.com',
-        password: 'senha123',
-        nome: 'Usuário Teste',
-      };
-      mockUsersService.create.mockRejectedValue(
-        new ConflictException('Email já está em uso')
-      );
-
-      await expect(controller.create(dto)).rejects.toThrow(ConflictException);
-      expect(mockUsersService.create).toHaveBeenCalledWith(dto);
-    });
-  });
-
   describe('findAll', () => {
     it('deve retornar todos os usuários', async () => {
       const users = [
@@ -117,6 +86,9 @@ describe('UsersController', () => {
   });
 
   describe('update', () => {
+    const currentUserAdmin: CurrentUserDto = { id: 99, nome: 'Admin', email: 'admin@example.com', role: 'admin' };
+    const currentUserUser: CurrentUserDto = { id: 1, nome: 'User', email: 'user@example.com', role: 'user' };
+
     it('deve atualizar um usuário', async () => {
       const updateDto: UpdateUserDto = {
         nome: 'Nome Atualizado',
@@ -125,10 +97,10 @@ describe('UsersController', () => {
       const updated = [makeUser({ nome: updateDto.nome, email: updateDto.email })];
       mockUsersService.update.mockResolvedValue(updated);
 
-      const result = await controller.update(1, updateDto);
+      const result = await controller.update(1, updateDto, currentUserAdmin);
 
       expect(result).toEqual(updated);
-      expect(mockUsersService.update).toHaveBeenCalledWith(1, updateDto);
+      expect(mockUsersService.update).toHaveBeenCalledWith(1, updateDto, currentUserAdmin);
     });
 
     it('deve lançar erro se tentar usar email já existente', async () => {
@@ -139,8 +111,10 @@ describe('UsersController', () => {
         new ConflictException('Email já está em uso')
       );
 
-      await expect(controller.update(1, updateDto)).rejects.toThrow(ConflictException);
-      expect(mockUsersService.update).toHaveBeenCalledWith(1, updateDto);
+      await expect(controller.update(1, updateDto, currentUserUser))
+        .rejects.toThrow(ConflictException);
+
+      expect(mockUsersService.update).toHaveBeenCalledWith(1, updateDto, currentUserUser);
     });
   });
 

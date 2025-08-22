@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '../users.service';
 import { UsersRepository } from '../users.repository';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
@@ -57,43 +57,6 @@ describe('UsersService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('create', () => {
-    it('deve criar um usuário com sucesso', async () => {
-      const dto: CreateUserDto = {
-        email: 'novo@example.com',
-        password: 'senha123',
-        nome: 'Novo Usuário',
-        isActive: true,
-      };
-      const user = makeUser(dto);
-      const userArray = [user];
-
-      repository.findByEmail.mockResolvedValue([]);
-      (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$10$hashedpassword');
-      repository.create.mockResolvedValue(userArray);
-
-      const result = await service.create(dto);
-
-      expect(result).toEqual(userArray);
-      expect(repository.findByEmail).toHaveBeenCalledWith(dto.email);
-      expect(bcrypt.hash).toHaveBeenCalledWith(dto.password, 10);
-      expect(repository.create).toHaveBeenCalledWith(dto, '$2b$10$hashedpassword');
-    });
-
-    it('deve lançar ConflictException se email já existe', async () => {
-      const dto: CreateUserDto = {
-        email: 'existe@example.com',
-        password: 'senha123',
-        nome: 'Usuário Teste',
-      };
-      const existingUser = makeUser();
-      repository.findByEmail.mockResolvedValue([existingUser]);
-
-      await expect(service.create(dto)).rejects.toThrow(ConflictException);
-      expect(repository.create).not.toHaveBeenCalled();
-    });
-  });
-
   describe('findAll', () => {
     it('deve retornar todos os usuários', async () => {
       const users = [makeUser(), makeUser({ id: 2 })];
@@ -137,6 +100,10 @@ describe('UsersService', () => {
   });
 
   describe('update', () => {
+    const currentUserAdmin = { id: 99, nome: 'Admin', email: 'admin@example.com', role: 'admin' };
+    const currentUserUser = { id: 1, nome: 'User', email: 'user@example.com', role: 'user' };
+    const anotherUser = { id: 2, nome: 'Another User', email: 'another@example.com', role: 'user' };
+
     it('deve atualizar um usuário com sucesso', async () => {
       const dto: UpdateUserDto = { nome: 'Novo Nome' };
       const user = makeUser();
@@ -147,7 +114,7 @@ describe('UsersService', () => {
       (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$10$newhash');
       repository.update.mockResolvedValue([updatedUser]);
 
-      const result = await service.update(1, dto);
+      const result = await service.update(1, dto, currentUserAdmin);
 
       expect(result).toEqual([updatedUser]);
       expect(repository.findOne).toHaveBeenCalledWith(1);
@@ -157,7 +124,8 @@ describe('UsersService', () => {
     it('deve lançar NotFoundException se usuário não existe', async () => {
       repository.findOne.mockResolvedValue([]);
 
-      await expect(service.update(999, {})).rejects.toThrow(NotFoundException);
+      await expect(service.update(999, {}, currentUserAdmin))
+        .rejects.toThrow(NotFoundException);
     });
 
     it('deve lançar ConflictException se email já está em uso', async () => {
@@ -167,8 +135,19 @@ describe('UsersService', () => {
       repository.findOne.mockResolvedValue([user]);
       repository.findByEmail.mockResolvedValue([otherUser]);
 
-      await expect(service.update(1, { email: 'existente@example.com' }))
-        .rejects.toThrow(ConflictException);
+      await expect(
+        service.update(1, { email: 'existente@example.com' }, currentUserAdmin)
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('deve lançar ForbiddenException se user tentar atualizar outro usuário', async () => {
+      const user = makeUser();
+
+      repository.findOne.mockResolvedValue([user]);
+
+      await expect(
+        service.update(1, { nome: 'Teste' }, anotherUser) 
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('deve atualizar a senha com hash', async () => {
@@ -181,7 +160,7 @@ describe('UsersService', () => {
       (bcrypt.hash as jest.Mock).mockResolvedValue('$2b$10$newhash');
       repository.update.mockResolvedValue([updatedUser]);
 
-      const result = await service.update(1, dto);
+      const result = await service.update(1, dto, currentUserUser);
 
       expect(bcrypt.hash).toHaveBeenCalledWith('novaSenha123', 10);
       expect(result).toEqual([updatedUser]);
